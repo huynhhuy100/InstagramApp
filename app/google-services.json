@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "154623337318",
+    "firebase_url": "https://lemon-f1fe8-default-rtdb.firebaseio.com",
+    "project_id": "lemon-f1fe8",
+    "storage_bucket": "lemon-f1fe8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154623337318:android:410a396517d2a862e6dea7",
+        "android_client_info": {
+          "package_name": "com.example.application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "154623337318-phts91ug9nd886t3tq3fgj0hei2q9ucg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAio1enwoL7u-aGCNJLT81hytgi6V5Uk2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "154623337318-phts91ug9nd886t3tq3fgj0hei2q9ucg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154623337318:android:81e80a689eed4811e6dea7",
+        "android_client_info": {
+          "package_name": "com.koddev.lemonn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "154623337318-phts91ug9nd886t3tq3fgj0hei2q9ucg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAio1enwoL7u-aGCNJLT81hytgi6V5Uk2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "154623337318-phts91ug9nd886t3tq3fgj0hei2q9ucg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
