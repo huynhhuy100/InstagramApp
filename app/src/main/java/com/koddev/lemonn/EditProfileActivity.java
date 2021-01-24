@@ -32,6 +32,7 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.koddev.lemonn.Model.User;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -42,9 +43,9 @@ public class EditProfileActivity extends AppCompatActivity {
     ImageView close, image_profile;
     TextView save, tv_change;
     MaterialEditText fullname, username, bio;
-
+    DatabaseReference reference;
     FirebaseUser firebaseUser;
-
+    private static final int IMAGE_REQUEST = 1;
     private Uri mImageUri;
     private StorageTask uploadTask;
     StorageReference storageRef;
@@ -65,7 +66,8 @@ public class EditProfileActivity extends AppCompatActivity {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         storageRef = FirebaseStorage.getInstance().getReference("uploads");
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -73,8 +75,16 @@ public class EditProfileActivity extends AppCompatActivity {
                 fullname.setText(user.getFullname());
                 username.setText(user.getUsername());
                 bio.setText(user.getBio());
-                Glide.with(getApplicationContext()).load(user.getImageurl()).into(image_profile);
+
+                if (user.getImageurl().equals("default")){
+                    image_profile.setImageResource(R.mipmap.ic_launcher);
+                } else {
+                    Picasso.with(EditProfileActivity.this).load(user.getImageurl()).into(image_profile);
+
+
+                }
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -101,24 +111,25 @@ public class EditProfileActivity extends AppCompatActivity {
         tv_change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CropImage.activity()
-                        .setAspectRatio(1,1)
-                        .setCropShape(CropImageView.CropShape.OVAL)
-                        .start(EditProfileActivity.this);
+                Toast.makeText(EditProfileActivity.this, "Chọn 1 ảnh bất kì ", Toast.LENGTH_SHORT).show();
+                openImage();
             }
         });
 
         image_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CropImage.activity()
-                        .setAspectRatio(1,1)
-                        .setCropShape(CropImageView.CropShape.OVAL)
-                        .start(EditProfileActivity.this);
+                openImage();
             }
         });
     }
 
+    private void openImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, IMAGE_REQUEST);
+    }
     private void updateProfile(String fullname, String username, String bio){
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
@@ -134,13 +145,13 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private String getFileExtension(Uri uri){
-        ContentResolver cR = getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cR.getType(uri));
+        ContentResolver contentResolver = EditProfileActivity.this.getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
     private void uploadImage(){
-        final ProgressDialog pd = new ProgressDialog(this);
+        final ProgressDialog pd = new ProgressDialog(EditProfileActivity.this);
         pd.setMessage("Uploading");
         pd.show();
         if (mImageUri != null){
@@ -190,15 +201,15 @@ public class EditProfileActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null){
+            mImageUri = data.getData();
 
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            mImageUri = result.getUri();
-            uploadImage();
-
-
-        } else {
-            Toast.makeText(this, "Something gone wrong!", Toast.LENGTH_SHORT).show();
+            if (uploadTask != null && uploadTask.isInProgress()){
+                Toast.makeText(EditProfileActivity.this, "Upload in preogress", Toast.LENGTH_SHORT).show();
+            } else {
+                uploadImage();
+            }
         }
     }
 }
